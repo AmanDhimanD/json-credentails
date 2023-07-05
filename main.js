@@ -1,5 +1,8 @@
 const readline = require("readline");
 const fs = require("fs");
+const path = require("path");
+
+const dataFolderPath = "jsondata";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -12,8 +15,10 @@ function loginPage() {
 
   rl.question("Enter your username: ", (username) => {
     rl.question("Enter your password: ", (password) => {
+      const credentialsPath = path.join(dataFolderPath, "credentials.json");
+
       // Read the credentials.json file
-      fs.readFile("Credentials.json", "utf8", (err, data) => {
+      fs.readFile(credentialsPath, "utf8", (err, data) => {
         if (err) {
           console.error("Error reading credentials file:", err);
           rl.close();
@@ -55,10 +60,12 @@ function signupPage() {
 
   rl.question("Enter your username: ", (username) => {
     rl.question("Enter your password: ", (password) => {
+      const credentialsPath = path.join(dataFolderPath, "credentials.json");
+
       // Read the existing credentials data (if any)
       let credentials = [];
       try {
-        const data = fs.readFileSync("Credentials.json", "utf8");
+        const data = fs.readFileSync(credentialsPath, "utf8");
         credentials = JSON.parse(data);
       } catch (err) {
         // If the file doesn't exist or is empty, an empty array will be used
@@ -77,7 +84,7 @@ function signupPage() {
       const newData = JSON.stringify(credentials);
 
       // Write the modified data back to the JSON file
-      fs.writeFileSync("Credentials.json", newData, "utf8");
+      fs.writeFileSync(credentialsPath, newData, "utf8");
 
       console.log("Signup successful!");
 
@@ -110,6 +117,11 @@ function mainMenu() {
         break;
     }
   });
+}
+
+// Create the data folder if it doesn't exist
+if (!fs.existsSync(dataFolderPath)) {
+  fs.mkdirSync(dataFolderPath);
 }
 
 // Start the program
