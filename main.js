@@ -59,7 +59,19 @@ function signupPage() {
   console.log("Welcome to the Signup page!");
 
   rl.question("Enter your username: ", (username) => {
+    if (!username) {
+      console.log("Username cannot be empty. Please try again.");
+      signupPage(); // Prompt again for username
+      return;
+    }
+
     rl.question("Enter your password: ", (password) => {
+      if (!password) {
+        console.log("Password cannot be empty. Please try again.");
+        signupPage(); // Prompt again for password
+        return;
+      }
+
       const credentialsPath = path.join(dataFolderPath, "credentials.json");
 
       // Read the existing credentials data (if any)
@@ -113,16 +125,3 @@ function mainMenu() {
         break;
       default:
         console.log("Invalid choice. Please try again.");
-        mainMenu();
-        break;
-    }
-  });
-}
-
-// Create the data folder if it doesn't exist
-if (!fs.existsSync(dataFolderPath)) {
-  fs.mkdirSync(dataFolderPath);
-}
-
-// Start the program
-mainMenu();
